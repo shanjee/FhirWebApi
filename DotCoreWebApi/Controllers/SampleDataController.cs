@@ -86,7 +86,8 @@ namespace DotCoreWebApi.Controllers
 
             foreach (var item in content.rows)
             {
-                bloodPressureFhirs.Add(new BloodPressureFhirDto {
+                bloodPressureFhirs.Add(new BloodPressureFhirDto
+                {
                     DocumentId = item[0].ToString(),
                     DateTaken = item[1].ToString(),
                     Systolic = Convert.ToInt64(item[2]),
@@ -96,6 +97,26 @@ namespace DotCoreWebApi.Controllers
             }
 
             return bloodPressureFhirs;
+        }
+
+
+        [HttpGet("[action]")]
+        public WeatherForecast GetWeatherForecast()
+        {
+            var weatherList = new List<Weather>();
+            weatherList.Add(new Weather { Label = "Shanjee", Data = new int[] { 6, 19, 6, 21, 7, 15 } });
+            //weatherList.Add(new Weather { Label = "New York", Data = new int[] { -8, -6, -1, 2, -7, 6 } });
+            //weatherList.Add(new Weather { Label = "Moscow", Data = new int[] { -4, 3, -5, -1, -6, -3 } });
+            //weatherList.Add(new Weather { Label = "London", Data = new int[] { 6, 2, 4, 6, 7, 7 } });
+
+            List<string> lineChartLabelsList = new List<string>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                //lineChartLabelsList.AddRange(new string[] { $"{(DayOfWeek)i} High", $"{(DayOfWeek)i} Low" });
+                lineChartLabelsList.Add(DateTime.Now.ToLongTimeString());
+            }
+            return new WeatherForecast { WeatherList = weatherList, ChartLabels = lineChartLabelsList.ToArray() };
         }
 
         #endregion
@@ -147,6 +168,21 @@ namespace DotCoreWebApi.Controllers
             public int totalResults { get; set; }
             public List<Column> columns { get; set; }
             public List<List<object>> rows { get; set; }
+        }
+        #endregion
+
+        #region GraphDtos
+
+        public class Weather
+        {
+            public int[] Data { get; set; }
+            public string Label { get; set; }
+        }
+
+        public class WeatherForecast
+        {
+            public List<Weather> WeatherList { get; set; }
+            public string[] ChartLabels { get; set; }
         }
         #endregion
     }
