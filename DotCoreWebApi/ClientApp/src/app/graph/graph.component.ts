@@ -20,21 +20,11 @@ export class GraphComponent {
     }
   };
 
-
-  //constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-  //  http.get(baseUrl + 'api/SampleData/GetWeatherForecast').subscribe(result => {
-  //    this.weatherForecast = result.json() as WeatherForecast;
-  //  }, error => console.error(error));
-  //}
-
-
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
     http.get<WeatherForecast>(baseUrl + 'api/SampleData/GetWeatherForecast').subscribe(result => {
       this.weatherForecast = result;
     }, error => console.error(error));
   }
-
-  
 }
 
 

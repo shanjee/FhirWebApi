@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DIPS.FHIR.Interface;
 using Hl7.Fhir.Model;
@@ -104,16 +105,18 @@ namespace DotCoreWebApi.Controllers
         public WeatherForecast GetWeatherForecast()
         {
             var weatherList = new List<Weather>();
-            weatherList.Add(new Weather { Label = "Shanjee", Data = new int[] { 6, 19, 6, 21, 7, 15 } });
+            weatherList.Add(new Weather { Label = "Shanjee", Data = new int[50] });
             //weatherList.Add(new Weather { Label = "New York", Data = new int[] { -8, -6, -1, 2, -7, 6 } });
             //weatherList.Add(new Weather { Label = "Moscow", Data = new int[] { -4, 3, -5, -1, -6, -3 } });
             //weatherList.Add(new Weather { Label = "London", Data = new int[] { 6, 2, 4, 6, 7, 7 } });
 
             List<string> lineChartLabelsList = new List<string>();
-
-            for (int i = 0; i < 10; i++)
+            var rng = new Random();
+            for (int i = 0; i < 50; i++)
             {
                 //lineChartLabelsList.AddRange(new string[] { $"{(DayOfWeek)i} High", $"{(DayOfWeek)i} Low" });
+                Thread.Sleep(500);
+                weatherList.First().Data[i] =  rng.Next(60, 155);
                 lineChartLabelsList.Add(DateTime.Now.ToLongTimeString());
             }
             return new WeatherForecast { WeatherList = weatherList, ChartLabels = lineChartLabelsList.ToArray() };
