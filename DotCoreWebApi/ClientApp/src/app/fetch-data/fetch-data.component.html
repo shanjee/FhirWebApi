@@ -1,0 +1,26 @@
+<h1>Blood Pressure</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+<p *ngIf="!forecasts"><em>Loading...</em></p>
+
+<table class='table' *ngIf="BloodPressureFhirStatsList">
+  <thead>
+    <tr>
+      <th>Document Id</th>
+      <th>Systolic</th>
+      <th>Diastolic</th>
+      <th>UnitOfMessure</th>
+      <th>DateTaken</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let forecast of BloodPressureFhirStatsList">
+      <td>{{ forecast.documentId }}</td>
+      <td>{{ forecast.systolic }}</td>
+      <td>{{ forecast.diastolic }}</td>
+      <td>{{ forecast.unitOfMessure }}</td>
+      <td>{{ forecast.dateTaken }}</td>
+    </tr>
+  </tbody>
+</table>
