@@ -1,12 +1,17 @@
 <h1>Body Temperature Readings</h1>
 
-<div class="row" *ngIf="graphCollection">
-  <div style="display: block">
-    <canvas baseChart
-            [datasets]="graphCollection.weatherList"
-            [labels]="graphCollection.chartLabels"
-            [options]="chartOptions"
-            [legend]="chartLegend"
-            [chartType]="chartType"></canvas>
+<div style="overflow:scroll;">
+  <div class="chart-wrapper">
+
+    <div class="row" *ngIf="graphCollection">
+      <div style="display: block">
+        <canvas baseChart
+                [datasets]="graphCollection.weatherList"
+                [labels]="graphCollection.chartLabels"
+                [options]="chartOptions"
+                [legend]="chartLegend"
+                [chartType]="chartType"></canvas>
+      </div>
+    </div>
   </div>
 </div>

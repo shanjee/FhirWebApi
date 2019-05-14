@@ -12,6 +12,7 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { GraphComponent } from './graph/graph.component';
 
 import { ChartsModule } from 'ng2-charts';
+import { CreateTemperatureComponent } from './create-temperature/create-temperature.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { ChartsModule } from 'ng2-charts';
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    GraphComponent
+    GraphComponent,
+    CreateTemperatureComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -33,6 +35,7 @@ import { ChartsModule } from 'ng2-charts';
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'graph', component: GraphComponent },
+      { path: 'CreateTemperatureComponent', component: CreateTemperatureComponent },
     ])
   ],
   providers: [],

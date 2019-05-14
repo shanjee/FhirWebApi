@@ -16,19 +16,7 @@ namespace DotCoreWebApi.Controllers
     {
         HttpClient restClient = new HttpClient();
 
-        [HttpGet("[action]")]
-        public IEnumerable<BodyTemperatureDto> GetBodyTemperature()
-        {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new BodyTemperatureDto
-            {
-                DateFormatted = DateTime.Now.AddDays(index).ToString("d"),
-                Temperature = rng.Next(-20, 55),
-                UnitOfMessure = "Cel"
-            });
-        }
-
-
+        #region Reading Data
         [HttpGet("[action]")]
         public async Task<GraphDataCollection> GetBodyTemperatureAql()
         {
@@ -75,9 +63,12 @@ namespace DotCoreWebApi.Controllers
                 new GraphData { Label = "Temperature C", Data = bodyTemperatureResult.Select(t => t.Temperature).ToArray() }
             };
 
-            return new  GraphDataCollection { WeatherList = temperatureData, ChartLabels = lineChartLabelsList.ToArray() };
-
-            //return bodyTemperatureResult;
+            return new GraphDataCollection { WeatherList = temperatureData, ChartLabels = lineChartLabelsList.ToArray() };
         }
+        #endregion
+
+        #region PostingData
+
+        #endregion
     }
 }
