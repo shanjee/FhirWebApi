@@ -102,10 +102,12 @@ namespace DotCoreWebApi.Controllers
 
 
         [HttpGet("[action]")]
-        public WeatherForecast GetWeatherForecast()
+        public async Task<GraphDataCollection> GetWeatherForecast()
         {
-            var weatherList = new List<Weather>();
-            weatherList.Add(new Weather { Label = "Shanjee", Data = new int[50] });
+            var weatherList = new List<GraphData>
+            {
+                new GraphData { Label = "Shanjee", Data = new int[50] }
+            };
             //weatherList.Add(new Weather { Label = "New York", Data = new int[] { -8, -6, -1, 2, -7, 6 } });
             //weatherList.Add(new Weather { Label = "Moscow", Data = new int[] { -4, 3, -5, -1, -6, -3 } });
             //weatherList.Add(new Weather { Label = "London", Data = new int[] { 6, 2, 4, 6, 7, 7 } });
@@ -115,11 +117,14 @@ namespace DotCoreWebApi.Controllers
             for (int i = 0; i < 50; i++)
             {
                 //lineChartLabelsList.AddRange(new string[] { $"{(DayOfWeek)i} High", $"{(DayOfWeek)i} Low" });
-                Thread.Sleep(500);
+               // Thread.Sleep(500);
                 weatherList.First().Data[i] =  rng.Next(60, 155);
                 lineChartLabelsList.Add(DateTime.Now.ToLongTimeString());
             }
-            return new WeatherForecast { WeatherList = weatherList, ChartLabels = lineChartLabelsList.ToArray() };
+
+            List<BloodPressureFhirDto> data = await GetBloodPressureFromAql();           
+
+            return new GraphDataCollection { WeatherList = weatherList, ChartLabels = lineChartLabelsList.ToArray() };
         }
 
         #endregion
@@ -176,15 +181,15 @@ namespace DotCoreWebApi.Controllers
 
         #region GraphDtos
 
-        public class Weather
+        public class GraphData
         {
             public int[] Data { get; set; }
             public string Label { get; set; }
         }
 
-        public class WeatherForecast
+        public class GraphDataCollection
         {
-            public List<Weather> WeatherList { get; set; }
+            public List<GraphData> WeatherList { get; set; }
             public string[] ChartLabels { get; set; }
         }
         #endregion

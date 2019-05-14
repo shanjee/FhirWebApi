@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class GraphComponent {
 
-  public weatherForecast: WeatherForecast;
+  public graphCollection: GraphDataCollection;
   public chartLegend: boolean = true;
   public chartType: string = 'line';  
 
@@ -21,19 +21,19 @@ export class GraphComponent {
   };
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<WeatherForecast>(baseUrl + 'api/SampleData/GetWeatherForecast').subscribe(result => {
-      this.weatherForecast = result;
+    http.get<GraphDataCollection>(baseUrl + 'api/SampleData/GetWeatherForecast').subscribe(result => {
+      this.graphCollection = result;
     }, error => console.error(error));
   }
 }
 
 
-interface Weather {
+interface GraphData {
   data: Array<number>;
   label: string;
 } 
 
-interface WeatherForecast {
-  weatherList: Weather[];
+interface GraphDataCollection {
+  weatherList: GraphData[];
   chartLabels: string[];
 }  

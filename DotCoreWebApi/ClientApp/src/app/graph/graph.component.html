@@ -1,10 +1,10 @@
 <h1>Blood Presure Readings</h1>
 
-<div class="row" *ngIf="weatherForecast">
+<div class="row" *ngIf="graphCollection">
   <div style="display: block">
     <canvas baseChart
-            [datasets]="weatherForecast.weatherList"
-            [labels]="weatherForecast.chartLabels"
+            [datasets]="graphCollection.weatherList"
+            [labels]="graphCollection.chartLabels"
             [options]="chartOptions"
             [legend]="chartLegend"
             [chartType]="chartType"></canvas>
