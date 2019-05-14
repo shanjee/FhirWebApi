@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DIPS.FHIR.Interface;
+using DotCoreWebApi.Dto;
 using Hl7.Fhir.Model;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -106,7 +107,7 @@ namespace DotCoreWebApi.Controllers
         {
             var weatherList = new List<GraphData>
             {
-                new GraphData { Label = "Shanjee", Data = new int[50] }
+                new GraphData { Label = "Shanjee", Data = new double[50] }
             };
             //weatherList.Add(new Weather { Label = "New York", Data = new int[] { -8, -6, -1, 2, -7, 6 } });
             //weatherList.Add(new Weather { Label = "Moscow", Data = new int[] { -4, 3, -5, -1, -6, -3 } });
@@ -122,7 +123,7 @@ namespace DotCoreWebApi.Controllers
                 lineChartLabelsList.Add(DateTime.Now.ToLongTimeString());
             }
 
-            List<BloodPressureFhirDto> data = await GetBloodPressureFromAql();           
+            //List<BloodPressureFhirDto> data = await GetBloodPressureFromAql();           
 
             return new GraphDataCollection { WeatherList = weatherList, ChartLabels = lineChartLabelsList.ToArray() };
         }
@@ -179,19 +180,19 @@ namespace DotCoreWebApi.Controllers
         }
         #endregion
 
-        #region GraphDtos
+        //#region GraphDtos
 
-        public class GraphData
-        {
-            public int[] Data { get; set; }
-            public string Label { get; set; }
-        }
+        //public class GraphData
+        //{
+        //    public int[] Data { get; set; }
+        //    public string Label { get; set; }
+        //}
 
-        public class GraphDataCollection
-        {
-            public List<GraphData> WeatherList { get; set; }
-            public string[] ChartLabels { get; set; }
-        }
-        #endregion
+        //public class GraphDataCollection
+        //{
+        //    public List<GraphData> WeatherList { get; set; }
+        //    public string[] ChartLabels { get; set; }
+        //}
+        //#endregion
     }
 }

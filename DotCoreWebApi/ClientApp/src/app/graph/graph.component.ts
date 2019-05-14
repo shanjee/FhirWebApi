@@ -21,7 +21,7 @@ export class GraphComponent {
   };
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<GraphDataCollection>(baseUrl + 'api/SampleData/GetWeatherForecast').subscribe(result => {
+    http.get<GraphDataCollection>(baseUrl + 'api/TemperatureGraph/GetBodyTemperatureAql').subscribe(result => {
       this.graphCollection = result;
     }, error => console.error(error));
   }
