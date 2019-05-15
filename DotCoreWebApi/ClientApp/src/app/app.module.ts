@@ -14,6 +14,9 @@ import { GraphComponent } from './graph/graph.component';
 import { ChartsModule } from 'ng2-charts';
 import { CreateTemperatureComponent } from './create-temperature/create-temperature.component';
 
+import { ReactiveFormsModule } from '@angular/forms';
+//import { FormControl } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -30,6 +33,7 @@ import { CreateTemperatureComponent } from './create-temperature/create-temperat
     HttpClientModule,
     FormsModule,
     ChartsModule,
+    ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },

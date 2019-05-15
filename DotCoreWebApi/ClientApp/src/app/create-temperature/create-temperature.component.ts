@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-create-temperature',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CreateTemperatureComponent implements OnInit {
 
+  temperature = new FormControl('');
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  SaveNewReading() {
+    this.temperature.setValue('');
   }
 
 }

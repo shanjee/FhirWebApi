@@ -1,3 +1,22 @@
-<p>
-  create-temperature works!
-</p>
+
+
+<div class="container">
+  <div class="form-group">
+  </div>
+
+  <div class="form-group">
+    <label>
+      Temperature:
+    </label>
+    <input type="text" [formControl]="temperature" />
+  </div>
+  <div class="form-group">
+    <button (click)="SaveNewReading()" class="btn btn-dark">Save new temperature reading</button>
+  </div>
+  <p>
+    Value: {{ temperature.value }}
+  </p>
+
+
+</div>
+
