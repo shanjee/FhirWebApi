@@ -68,10 +68,10 @@ namespace DotCoreWebApi.Controllers
         #endregion
 
         #region PostingData
-        [HttpGet("[action]")]
-        public  GraphDataCollection CreateBodyTemperature()
-        {             
-            return new GraphDataCollection();
+        [HttpPost("[action]")]
+        public bool CreateBodyTemperature(BodyTemperatureDto temperatureModel)
+        {
+            return true;
         }
         #endregion
     }

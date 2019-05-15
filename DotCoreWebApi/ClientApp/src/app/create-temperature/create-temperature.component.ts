@@ -1,25 +1,51 @@
 import { FormControl } from '@angular/forms';
-import { Component, Inject } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
+import { HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+import { TemperatureModel } from '../model/temperature-model';
 
 @Component({
   selector: 'app-create-temperature',
   templateUrl: './create-temperature.component.html',
   styleUrls: ['./create-temperature.component.css']
 })
-export class CreateTemperatureComponent {
+export class CreateTemperatureComponent implements OnInit {
 
   temperature = new FormControl('');
+  temperatureForm: any;
 
   public graphCollection: GraphDataCollection;
 
+  temperatureModel: Object = {
+    readingValue: '',
+    unit: '',
+    dateOfReading: ''
+  };
 
-  constructor(public http: HttpClient, @Inject('BASE_URL') public baseUrl: string) { }
+  ngOnInit() {
+    this.temperatureForm = this.formbulider.group({
+      Temperature: ['', [Validators.required]],
+      UnitOfMessure: ['', [Validators.required]]
+    });
 
+  }
+
+  onFormSubmit() {
+
+    const temperatureData = this.temperatureForm.value;
+    this.createTemperature(temperatureData);
+    this.temperatureForm.reset();
+  }
+
+
+  constructor(private formbulider: FormBuilder, public http: HttpClient, @Inject('BASE_URL') public baseUrl: string) { }
 
 
   SaveNewReading() {
-    this.temperature.setValue('');
 
     this.http.get<GraphDataCollection>(this.baseUrl + 'api/TemperatureGraph/CreateBodyTemperature').subscribe(result => {
       this.graphCollection = result;
@@ -27,10 +53,10 @@ export class CreateTemperatureComponent {
   }
 
 
-  AddTemperature(temperatureDto: TemperatureDto) {
+  AddTemperature(temperatureValue, dateOfReading) {
 
     this.http.post(this.baseUrl + 'api/TemperatureGraph/CreateBodyTemperature', {
-      temperatureDto
+      temperatureValue, dateOfReading
     })
       .subscribe(
         res => {
@@ -41,6 +67,19 @@ export class CreateTemperatureComponent {
         }
       );
   }
+
+  createTemperature(temperature: TemperatureModel) {
+    const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
+
+    //this.http.post(this.baseUrl + 'api/TemperatureGraph/CreateBodyTemperature',
+    // JSON.stringify(temperature)).subscribe();
+
+    this.http.post<boolean>(this.baseUrl + 'api/TemperatureGraph/CreateBodyTemperature', JSON.stringify(temperature), httpOptions)
+      .subscribe(res => {
+        const response = res;
+      });
+  }
+
 }
 
 
