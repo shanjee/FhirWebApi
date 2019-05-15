@@ -1,8 +1,10 @@
 ﻿using DotCoreWebApi.Dto;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -15,6 +17,12 @@ namespace DotCoreWebApi.Controllers
     public class TemperatureGraphController : ControllerBase
     {
         HttpClient restClient = new HttpClient();
+
+        private IHostingEnvironment _env;
+        public TemperatureGraphController(IHostingEnvironment env)
+        {
+            _env = env;
+        }
 
         #region Reading Data
         [HttpGet("[action]")]
@@ -69,9 +77,33 @@ namespace DotCoreWebApi.Controllers
 
         #region PostingData
         [HttpPost("[action]")]
-        public bool CreateBodyTemperature(BodyTemperatureDto temperatureModel)
+        public async Task<SavedRespone> CreateBodyTemperature(BodyTemperatureDto temperatureModel)
         {
-            return true;
+            restClient.DefaultRequestHeaders.Accept.Clear();
+            restClient.DefaultRequestHeaders.Add("Auth-Ticket", "3fd00df2-02dd-488d-9b58-403f385ccc49");
+            string requestUrl = "https://az-sea-fl-srv02.dipscloud.com/DIPS-WebAPI/HL7/FHIRDSTU2/Observation?_profile=DIPSVitalSignsObservation";
+
+            try
+            {
+                var assembly = typeof(DotCoreWebApi.Controllers.TemperatureGraphController).Assembly;
+                Stream resource = assembly.GetManifestResourceStream("JsonDataStore._fonts.BodyTemperature_V1.json");
+
+                var webRoot = _env.ContentRootPath;
+                var file = System.IO.Path.Combine(webRoot, "JsonDataStore/BodyTemperature_V1.json");
+
+                var JsonData = System.IO.File.ReadAllText(file).Replace("[TEMPERATURE]", temperatureModel.Temperature.ToString());
+
+                var response = await restClient.PostAsync(requestUrl, new StringContent(JsonData, Encoding.UTF8, "application/json"));
+
+                string postResponse = await response.Content.ReadAsStringAsync();
+
+                return JsonConvert.DeserializeObject<SavedRespone>(postResponse);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+           // return true;
         }
         #endregion
     }

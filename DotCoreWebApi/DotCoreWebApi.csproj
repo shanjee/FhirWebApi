@@ -26,7 +26,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\app\Model\" />
+    <None Remove="ClientApp\src\app\Model\temperature-model.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ClientApp\src\app\Model\temperature-model.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="ExternalDlls\" />
   </ItemGroup>
 

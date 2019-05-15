@@ -69,7 +69,6 @@ namespace DotCoreWebApi.Controllers
         [HttpGet("[action]")]
         public async Task<List<BloodPressureFhirDto>> GetBloodPressureFromAql()
         {
-
             restClient.DefaultRequestHeaders.Accept.Clear();
             restClient.DefaultRequestHeaders.Add("Auth-Ticket", "3fd00df2-02dd-488d-9b58-403f385ccc49");
 
