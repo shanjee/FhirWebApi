@@ -48,14 +48,6 @@ export class CreateTemperatureComponent implements OnInit {
   constructor(private formbulider: FormBuilder, public http: HttpClient, @Inject('BASE_URL') public baseUrl: string) { }
 
 
-  aveNewReading() {
-
-    this.http.get<GraphDataCollection>(this.baseUrl + 'api/TemperatureGraph/CreateBodyTemperature').subscribe(result => {
-      this.graphCollection = result;
-    }, error => console.error(error));
-  }
-
-
   AddTemperature(temperatureValue, dateOfReading) {
 
     this.http.post(this.baseUrl + 'api/TemperatureGraph/CreateBodyTemperature', {
@@ -73,10 +65,7 @@ export class CreateTemperatureComponent implements OnInit {
 
   createTemperature(temperature: TemperatureModel) {
     const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
-    //this.http.post(this.baseUrl + 'api/TemperatureGraph/CreateBodyTemperature',
-    // JSON.stringify(temperature)).subscribe();
-
+    
     this.http.post<SavedRespone>(this.baseUrl + 'api/TemperatureGraph/CreateBodyTemperature', JSON.stringify(temperature), httpOptions)
       .subscribe(res => {
         this.savedRespone = res;
