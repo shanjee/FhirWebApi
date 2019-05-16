@@ -1,11 +1,9 @@
-
-
 <!--<div class="container">
   <div class="form-group">
   </div>
 
   <div class="form-group">
-    
+
 
     <label>
       Temperature:
@@ -19,81 +17,30 @@
 
   </div>
 </div>-->
-
 <!--<input #name placeholder="name" />
 <input #phone placeholder="phone" />
 <button (click)="AddTemperature(name.value,phone.value)">Save New Reading</button>-->
 
 
+
+
 <div class="container">
+  <p class="h4 mb-4">Create Temperature</p>
+  <form class="text-center border border-light p-5" [formGroup]="temperatureForm" (ngSubmit)="onFormSubmit(temperatureForm.value)">
 
-  <form [formGroup]="temperatureForm" (ngSubmit)="onFormSubmit(temperatureForm.value)">
-    <table>
-      <tr>
-        <td class="tbl1">
+    <label>
+      Temperature Reading:
+    </label>
+    <input formControlName="Temperature">
 
-          <label>
-            Temperature Reading:
-          </label>
-          <input formControlName="Temperature">
+    <button mdbBtn color="info" block="true" class="my-4" type="submit">Submit</button>
+    <button type="reset" (click)="resetForm()">Reset</button>
 
-        </td>
-
-        <td class="tbl1">
-          <label>
-            Unit of MEssurement:
-          </label>
-          <input formControlName="UnitOfMessure">
-
-        </td>
-      </tr>
-      <tr></tr>
-      <tr>
-        <td></td>
-        <td class="content-center">
-          <button type="submit">Submit</button>
-          <button type="reset" (click)="resetForm()">Reset</button>
-        </td>
-        <td>
-          <p *ngIf="dataSaved" style="color:rgb(0, 128, 0);font-size:20px;font-weight:bold" Class="success" align="left">
-            {{massage}}
-          </p>
-        </td>
-      </tr>
-    </table>
-    <br><br>
-    <!--<table class="table">
-      <tr ngclass="btn-primary">
-        <th class="tbl2">Employee Name</th>
-        <th class="tbl2">Date Of Birth</th>
-        <th class="tbl2">Email Id</th>
-        <th class="tbl2">Gender</th>
-        <th class="tbl2">Address</th>
-        <th class="tbl2">Pine Code</th>
-        <th class="tbl2">Edit</th>
-        <th class="tbl2">Delete</th>
-      </tr>
-      <tr *ngFor="let employee of allEmployees | async">
-        <td class="tbl2">{{employee.EmpName}}</td>
-        <td class="tbl2">{{employee.DateOfBirth | date }}</td>
-        <td class="tbl2">{{employee.EmailId}}</td>
-        <td class="tbl2">{{employee.Gender ==0? 'Male' : 'Female'}}</td>
-        <td class="tbl2">{{employee.Address}}</td>
-        <td class="tbl2">{{employee.PinCode}}</td>
-        <td class="tbl2">
-          <button type="button" class="btn btn-info"   (click)="loadEmployeeToEdit(employee.EmpId)">Edit</button>
-        </td>
-        <td class="tbl2">
-          <button type="button" class="btn btn-danger"   (click)="deleteEmployee(employee.EmpId)">Delete</button>
-        </td>
-      </tr>
-
-    </table>-->
   </form>
 
   <label>{{savedRespone.resourceType}}</label>
   <label>{{savedRespone.id}}</label>
   <label>{{savedRespone.comments}}</label>
-  
 
 </div>
+

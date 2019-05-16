@@ -19,7 +19,9 @@ export class CreateTemperatureComponent implements OnInit {
   temperatureForm: any;
 
   public graphCollection: GraphDataCollection;
-  private savedRespone: SavedRespone;
+  private savedRespone: SavedRespone = {
+    resourceType: '', comments: '', id :''
+  };
 
   temperatureModel: Object = {
     readingValue: '',
@@ -46,7 +48,7 @@ export class CreateTemperatureComponent implements OnInit {
   constructor(private formbulider: FormBuilder, public http: HttpClient, @Inject('BASE_URL') public baseUrl: string) { }
 
 
-  SaveNewReading() {
+  aveNewReading() {
 
     this.http.get<GraphDataCollection>(this.baseUrl + 'api/TemperatureGraph/CreateBodyTemperature').subscribe(result => {
       this.graphCollection = result;
@@ -100,9 +102,9 @@ interface GraphDataCollection {
   chartLabels: string[];
 }
 
-interface SavedRespone {  
-  resourceType: string[];
-  id: string[];
-  comments: string[];
+interface SavedRespone {
+  resourceType: string;
+  id: string;
+  comments: string;
 }
 

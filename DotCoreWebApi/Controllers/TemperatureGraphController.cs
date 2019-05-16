@@ -75,6 +75,7 @@ namespace DotCoreWebApi.Controllers
             }
 
             List<string> lineChartLabelsList = bodyTemperatureResult.Select(time => time.DateFormatted).ToList();
+
             var temperatureData = new List<GraphData>
             {
                 new GraphData { Label = "Temperature C", Data = bodyTemperatureResult.Select(t => t.Temperature).ToArray() }
