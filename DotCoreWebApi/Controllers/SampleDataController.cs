@@ -9,6 +9,7 @@ using DIPS.FHIR.Interface;
 using DotCoreWebApi.Dto;
 using Hl7.Fhir.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -19,6 +20,12 @@ namespace DotCoreWebApi.Controllers
     public class SampleDataController : Controller
     {
         HttpClient restClient = new HttpClient();
+        private IConfiguration m_configuration;
+
+        public SampleDataController(IConfiguration iConfiguration)
+        {
+            m_configuration = iConfiguration;
+        }
 
         private static string[] Summaries = new[]
         {

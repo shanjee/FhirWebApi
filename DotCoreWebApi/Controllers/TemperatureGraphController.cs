@@ -1,6 +1,7 @@
 ﻿using DotCoreWebApi.Dto;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,28 +17,36 @@ namespace DotCoreWebApi.Controllers
     [ApiController]
     public class TemperatureGraphController : ControllerBase
     {
-        HttpClient restClient = new HttpClient();
-
+        #region Private variables
+        private HttpClient restClient = new HttpClient();
         private IHostingEnvironment _env;
-        public TemperatureGraphController(IHostingEnvironment env)
+        private IConfiguration m_configuration; 
+        #endregion
+
+        public TemperatureGraphController(IHostingEnvironment env , IConfiguration iConfiguration)
         {
             _env = env;
+            m_configuration = iConfiguration;
         }
 
         #region Reading Data
         [HttpGet("[action]")]
         public async Task<GraphDataCollection> GetBodyTemperatureAql()
         {
-            string requestUrl = "https://az-sea-fl-srv02.dipscloud.com:4443/api/v1/query";
-            string jsonInString = "{\"aql\":\"\\r\\n\\r\\nSELECT tag(o, 'DocumentId') as DocumentId, " +
+            var PatientId = m_configuration.GetSection("PatientId").Value;
+
+            var aqlSelect = "{\"aql\":\"\\r\\n\\r\\nSELECT tag(o, 'DocumentId') as DocumentId, " +
                                     "\\r\\no /data/events/time/value As Date," +
                                     "\\r\\no /data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude As Temperature," +
                                     "\\r\\no /data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/units As TemperatureUnits " +
                                     "\\r\\nFROM EHR e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.body_temperature.v2] " +
-                                    "\\r\\n\\r\\nwhere e/ehr_status/subject/external_ref/id/value = '1000239'" +
-                                    "\\r\\n\",\"tagScope\":{\"tags\":[]}}";
+                                    "\\r\\n\\r\\nwhere e/ehr_status/subject/external_ref/id/value =";
 
-            var response = await restClient.PostAsync(requestUrl, new StringContent(jsonInString, Encoding.UTF8, "application/json"));
+            var aqlTag = "\\r\\n\",\"tagScope\":{\"tags\":[]}}";
+
+            var finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'", aqlTag);
+
+            var response = await restClient.PostAsync(m_configuration.GetSection("EhrStoreServerUrl").Value, new StringContent(finalAqlQuery, Encoding.UTF8, "application/json"));
 
             string postResponse = await response.Content.ReadAsStringAsync();
             var content = JsonConvert.DeserializeObject<RootObject>(postResponse);
@@ -80,8 +89,8 @@ namespace DotCoreWebApi.Controllers
         public async Task<SavedRespone> CreateBodyTemperature(BodyTemperatureDto temperatureModel)
         {
             restClient.DefaultRequestHeaders.Accept.Clear();
-            restClient.DefaultRequestHeaders.Add("Auth-Ticket", "3fd00df2-02dd-488d-9b58-403f385ccc49");
-            string requestUrl = "https://az-sea-fl-srv02.dipscloud.com/DIPS-WebAPI/HL7/FHIRDSTU2/Observation?_profile=DIPSVitalSignsObservation";
+            restClient.DefaultRequestHeaders.Add("Auth-Ticket", m_configuration.GetSection("Auth-Ticket").Value);
+            //string requestUrl = "https://az-sea-fl-srv02.dipscloud.com/DIPS-WebAPI/HL7/FHIRDSTU2/Observation?_profile=DIPSVitalSignsObservation";
 
             try
             {
@@ -93,7 +102,7 @@ namespace DotCoreWebApi.Controllers
 
                 var JsonData = System.IO.File.ReadAllText(file).Replace("[TEMPERATURE]", temperatureModel.Temperature.ToString());
 
-                var response = await restClient.PostAsync(requestUrl, new StringContent(JsonData, Encoding.UTF8, "application/json"));
+                var response = await restClient.PostAsync(m_configuration.GetSection("VitalSignCreateUrl").Value, new StringContent(JsonData, Encoding.UTF8, "application/json"));
 
                 string postResponse = await response.Content.ReadAsStringAsync();
 
@@ -103,7 +112,7 @@ namespace DotCoreWebApi.Controllers
             {
                 return null;
             }
-           // return true;
+          
         }
         #endregion
     }
