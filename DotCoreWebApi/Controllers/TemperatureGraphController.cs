@@ -20,10 +20,10 @@ namespace DotCoreWebApi.Controllers
         #region Private variables
         private HttpClient restClient = new HttpClient();
         private IHostingEnvironment _env;
-        private IConfiguration m_configuration; 
+        private IConfiguration m_configuration;
         #endregion
 
-        public TemperatureGraphController(IHostingEnvironment env , IConfiguration iConfiguration)
+        public TemperatureGraphController(IHostingEnvironment env, IConfiguration iConfiguration)
         {
             _env = env;
             m_configuration = iConfiguration;
@@ -34,6 +34,7 @@ namespace DotCoreWebApi.Controllers
         public async Task<GraphDataCollection> GetBodyTemperatureAql()
         {
             var PatientId = m_configuration.GetSection("PatientId").Value;
+            var finalAqlQuery = "";
 
             var aqlSelect = "{\"aql\":\"\\r\\n\\r\\nSELECT tag(o, 'DocumentId') as DocumentId, " +
                                     "\\r\\no /data/events/time/value As Date," +
@@ -44,7 +45,14 @@ namespace DotCoreWebApi.Controllers
 
             var aqlTag = "\\r\\n\",\"tagScope\":{\"tags\":[]}}";
 
-            var finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'", aqlTag);
+            if (m_configuration.GetSection("CanFilterByDate").Value.ToLower() == "true")
+            {
+                finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'" , m_configuration.GetSection("DateRangeFilter").Value , aqlTag);
+            }
+            else
+            {
+                finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'", aqlTag);
+            }
 
             var response = await restClient.PostAsync(m_configuration.GetSection("EhrStoreServerUrl").Value, new StringContent(finalAqlQuery, Encoding.UTF8, "application/json"));
 
@@ -113,7 +121,7 @@ namespace DotCoreWebApi.Controllers
             {
                 return null;
             }
-          
+
         }
         #endregion
     }
