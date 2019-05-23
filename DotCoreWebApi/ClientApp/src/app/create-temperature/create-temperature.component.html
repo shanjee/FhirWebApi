@@ -27,7 +27,7 @@
 <div class="container">
 
   <form class="text-center border border-light p-5" [formGroup]="temperatureForm" (ngSubmit)="onFormSubmit(temperatureForm.value)">
-
+    <h3>Create Body Temperature</h3>
     <label>
       Temperature Reading:
     </label>
@@ -36,11 +36,11 @@
     <button mdbBtn color="info" block="true" class="my-4" type="submit">Submit</button>
     <button type="reset" (click)="resetForm()">Reset</button>
 
-  </form>
+    <!--<label>{{savedRespone.resourceType}}</label>
+    <label>{{savedRespone.id}}</label>-->
+    <label>{{savedRespone.comments}}</label>
 
-  <label>{{savedRespone.resourceType}}</label>
-  <label>{{savedRespone.id}}</label>
-  <label>{{savedRespone.comments}}</label>
+  </form>
 
 </div>
 

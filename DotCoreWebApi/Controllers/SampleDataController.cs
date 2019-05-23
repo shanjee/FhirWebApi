@@ -78,30 +78,36 @@ namespace DotCoreWebApi.Controllers
         {
             restClient.DefaultRequestHeaders.Accept.Clear();
             restClient.DefaultRequestHeaders.Add("Auth-Ticket", "3fd00df2-02dd-488d-9b58-403f385ccc49");
-
-            var jsonString = await restClient.GetStringAsync("https://az-sea-fl-srv02.dipscloud.com/DIPS-WebAPI/HL7/FHIRDSTU2/Observation/ako1007372?_profile=DIPSVitalSignsObservation");
-
-            string requestUrl = "https://az-sea-fl-srv02.dipscloud.com:4443/api/v1/query";
-            string jsonInString = "{\"aql\":\"SELECT tag(o, 'DocumentId') as DocumentId, \\r\\n\\r\\no /data/events/time/value As Date,\\r\\no /data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude As Systolic, \\r\\no /data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/units As SystolicUnits, \\r\\no /data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude As Diastolic,\\r\\no /data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/units As DiastolicUnits, \\r\\nFROM EHR e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v1]   \\r\\n\\r\\nwhere e/ehr_status/subject/external_ref/id/value = '1000239'\\r\\n\",\"tagScope\":{\"tags\":[]}}";
-
-
-            var response = await restClient.PostAsync(requestUrl, new StringContent(jsonInString, Encoding.UTF8, "application/json"));
-
-            string postResponse = await response.Content.ReadAsStringAsync();
-            var content = JsonConvert.DeserializeObject<RootObject>(postResponse);
-
             List<BloodPressureFhirDto> bloodPressureFhirs = new List<BloodPressureFhirDto>();
 
-            foreach (var item in content.rows)
+            try
             {
-                bloodPressureFhirs.Add(new BloodPressureFhirDto
+                //var jsonString = await restClient.GetStringAsync("https://az-sea-fl-srv02.dipscloud.com/DIPS-WebAPI/HL7/FHIRDSTU2/Observation/ako1007372?_profile=DIPSVitalSignsObservation");
+
+                string requestUrl = "https://az-sea-fl-srv02.dipscloud.com:4443/api/v1/query";
+                string jsonInString = "{\"aql\":\"SELECT tag(o, 'DocumentId') as DocumentId, \\r\\n\\r\\no /data/events/time/value As Date,\\r\\no /data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude As Systolic, \\r\\no /data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/units As SystolicUnits, \\r\\no /data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude As Diastolic,\\r\\no /data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/units As DiastolicUnits, \\r\\nFROM EHR e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v1]   \\r\\n\\r\\nwhere e/ehr_status/subject/external_ref/id/value = '1000239'\\r\\n\",\"tagScope\":{\"tags\":[]}}";
+
+
+                var response = await restClient.PostAsync(requestUrl, new StringContent(jsonInString, Encoding.UTF8, "application/json"));
+
+                string postResponse = await response.Content.ReadAsStringAsync();
+                var content = JsonConvert.DeserializeObject<RootObject>(postResponse);
+               
+
+                foreach (var item in content.rows)
                 {
-                    DocumentId = item[0].ToString(),
-                    DateTaken = item[1].ToString(),
-                    Systolic = Convert.ToInt64(item[2]),
-                    Diastolic = Convert.ToInt64(item[4]),
-                    UnitOfMessure = item[5].ToString()
-                });
+                    bloodPressureFhirs.Add(new BloodPressureFhirDto
+                    {
+                        DocumentId = item[0].ToString(),
+                        DateTaken = item[1].ToString(),
+                        Systolic = Convert.ToInt64(item[2]),
+                        Diastolic = Convert.ToInt64(item[4]),
+                        UnitOfMessure = item[5].ToString()
+                    });
+                }
+            }
+            catch (Exception e)
+            {
             }
 
             return bloodPressureFhirs;

@@ -47,7 +47,7 @@ namespace DotCoreWebApi.Controllers
 
             if (m_configuration.GetSection("CanFilterByDate").Value.ToLower() == "true")
             {
-                finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'" , m_configuration.GetSection("DateRangeFilter").Value , aqlTag);
+                finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'", m_configuration.GetSection("DateRangeFilter").Value, aqlTag);
             }
             else
             {
@@ -84,12 +84,25 @@ namespace DotCoreWebApi.Controllers
 
             List<string> lineChartLabelsList = bodyTemperatureResult.Select(time => time.DateFormatted).ToList();
 
+            List<string> lineChartFullLabelsList = new List<string>();
+
+            var result = bodyTemperatureResult.Aggregate(new BodyTemperatureDto(),
+                                    (r, f) =>
+                                    {
+                                        //r.DocumentId =  string.Join(" - ", f.DateFormatted, string.Format("{0}°C", f.Temperature));
+                                        r.DocumentId = string.Join(" - ", f.DateFormatted);
+                                        lineChartFullLabelsList.Add(r.DocumentId);
+                                        return r;
+                                    });
+
+
             var temperatureData = new List<GraphData>
             {
-                new GraphData { Label = "Temperature C", Data = bodyTemperatureResult.Select(t => t.Temperature).ToArray() }
+                new GraphData { Label = "Temperature °C", Data = bodyTemperatureResult.Select(t => t.Temperature).ToArray() }
             };
 
-            return new GraphDataCollection { WeatherList = temperatureData, ChartLabels = lineChartLabelsList.ToArray() };
+            //return new GraphDataCollection { WeatherList = temperatureData, ChartLabels = lineChartLabelsList.ToArray() };
+            return new GraphDataCollection { WeatherList = temperatureData, ChartLabels = lineChartFullLabelsList.ToArray() };
         }
         #endregion
 
@@ -115,7 +128,9 @@ namespace DotCoreWebApi.Controllers
 
                 string postResponse = await response.Content.ReadAsStringAsync();
 
-                return JsonConvert.DeserializeObject<SavedRespone>(postResponse);
+                SavedRespone savedRespone =  JsonConvert.DeserializeObject<SavedRespone>(postResponse);
+                savedRespone.comments = $"New Observation {savedRespone.id} has been created";
+                return savedRespone;
             }
             catch (Exception e)
             {
