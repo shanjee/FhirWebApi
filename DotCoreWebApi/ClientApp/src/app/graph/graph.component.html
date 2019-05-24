@@ -1,12 +1,14 @@
 
 <script>
-    window.setInterval('refresh()', 1000); 	// Call a function every 10000 milliseconds (OR 10 seconds).
+  window.setInterval('refresh()', 1000); 	// Call a function every 10000 milliseconds (OR 10 seconds).
 
-    // Refresh or reload page.
-    function refresh() {
-        window .location.reload();
-    }
+  // Refresh or reload page.
+  function refresh() {
+    window.location.reload();
+  }
 </script>
+
+
 
 <h1>Body Temperature Readings</h1>
 
@@ -25,3 +27,20 @@
     </div>
   </div>
 </div>
+
+<form class="text-center border border-light p-5" [formGroup]="temperatureForm" (ngSubmit)="onFormSubmit(temperatureForm.value)">
+  <label>
+    Patient ID
+  </label>
+  <input formControlName="Temperature">
+  <label>
+    Start Date
+  </label>
+
+  <input type="datetime-local" name="StartDate" formControlName="StartDate">
+  <label>
+    End Date
+  </label>
+  <input type="datetime-local" name="EndDate" [value]="date" formControlName="EndDate">
+  <button mdbBtn color="info" block="true" class="my-4" type="submit">Search</button>
+</form>

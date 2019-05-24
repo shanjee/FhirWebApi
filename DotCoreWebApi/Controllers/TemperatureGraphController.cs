@@ -31,7 +31,7 @@ namespace DotCoreWebApi.Controllers
 
         #region Reading Data
         [HttpGet("[action]")]
-        public async Task<GraphDataCollection> GetBodyTemperatureAql()
+        public async Task<GraphDataCollection> GetBodyTemperatureAql(string startdate, string enddate)
         {
             var PatientId = m_configuration.GetSection("PatientId").Value;
             var finalAqlQuery = "";
@@ -45,13 +45,21 @@ namespace DotCoreWebApi.Controllers
 
             var aqlTag = "\\r\\n\",\"tagScope\":{\"tags\":[]}}";
 
-            if (m_configuration.GetSection("CanFilterByDate").Value.ToLower() == "true")
+            if (!string.IsNullOrEmpty(startdate) && (!string.IsNullOrEmpty(enddate)))
             {
-                finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'", m_configuration.GetSection("DateRangeFilter").Value, aqlTag);
+                string dateFilter = $"and o /data/events/time/value > '{startdate}' and o /data/events/time/value < '{enddate}'";
+                finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'", dateFilter, aqlTag);
             }
             else
             {
-                finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'", aqlTag);
+                if (m_configuration.GetSection("CanFilterByDate").Value.ToLower() == "true")
+                {
+                    finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'", m_configuration.GetSection("DateRangeFilter").Value, aqlTag);
+                }
+                else
+                {
+                    finalAqlQuery = string.Concat(aqlSelect, "'", PatientId, "'", aqlTag);
+                }
             }
 
             var response = await restClient.PostAsync(m_configuration.GetSection("EhrStoreServerUrl").Value, new StringContent(finalAqlQuery, Encoding.UTF8, "application/json"));
