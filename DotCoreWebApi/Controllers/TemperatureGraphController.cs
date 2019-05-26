@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DotCoreWebApi.Controllers
@@ -136,7 +137,7 @@ namespace DotCoreWebApi.Controllers
 
                 string postResponse = await response.Content.ReadAsStringAsync();
 
-                SavedRespone savedRespone =  JsonConvert.DeserializeObject<SavedRespone>(postResponse);
+                SavedRespone savedRespone = JsonConvert.DeserializeObject<SavedRespone>(postResponse);
                 savedRespone.comments = $"New Observation {savedRespone.id} has been created";
                 return savedRespone;
             }
@@ -145,6 +146,49 @@ namespace DotCoreWebApi.Controllers
                 return null;
             }
 
+        }
+
+        [HttpGet("[action]")]
+        public async Task<SavedRespone> GenerateTemperatureAsAuto()
+        {
+            restClient.DefaultRequestHeaders.Accept.Clear();
+            restClient.DefaultRequestHeaders.Add("Auth-Ticket", m_configuration.GetSection("Auth-Ticket").Value);
+            string postResponse = string.Empty;
+
+            try
+            {
+                var assembly = typeof(DotCoreWebApi.Controllers.TemperatureGraphController).Assembly;
+                Stream resource = assembly.GetManifestResourceStream("JsonDataStore._fonts.BodyTemperature_V1.json");
+
+                var webRoot = _env.ContentRootPath;
+                var file = System.IO.Path.Combine(webRoot, "JsonDataStore/BodyTemperature_V1.json");
+
+                for (int i = 0; i < 10; i++)
+                {
+                    double temperatureGenerated = GetRandomTemperature(36.5, 41.2);
+                    var JsonData = System.IO.File.ReadAllText(file).Replace("[TEMPERATURE]", String.Format("{0:0.00}", temperatureGenerated));
+
+                    var response = await restClient.PostAsync(m_configuration.GetSection("VitalSignCreateUrl").Value, new StringContent(JsonData, Encoding.UTF8, "application/json"));
+                    postResponse = await response.Content.ReadAsStringAsync();
+                    Thread.Sleep(5000);
+                }
+
+                SavedRespone savedRespone = JsonConvert.DeserializeObject<SavedRespone>(postResponse);
+                savedRespone.comments = $"New Observation {savedRespone.id} has been created";
+                return savedRespone;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+        }
+
+        // Generate a random number between two numbers
+        private double GetRandomTemperature(double minimum, double maximum)
+        {
+            Random random = new Random();
+            return random.NextDouble() * (maximum - minimum) + minimum;
         }
         #endregion
     }

@@ -20,7 +20,7 @@ export class CreateTemperatureComponent implements OnInit {
 
   public graphCollection: GraphDataCollection;
   private savedRespone: SavedRespone = {
-    resourceType: '', comments: '', id :''
+    resourceType: '', comments: '', id: ''
   };
 
   temperatureModel: Object = {
@@ -65,12 +65,22 @@ export class CreateTemperatureComponent implements OnInit {
 
   createTemperature(temperature: TemperatureModel) {
     const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-    
+
     this.http.post<SavedRespone>(this.baseUrl + 'api/TemperatureGraph/CreateBodyTemperature', JSON.stringify(temperature), httpOptions)
       .subscribe(res => {
         this.savedRespone = res;
       });
   }
+
+  GenerateTemperatureAsAuto() {
+    const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
+
+    this.http.get<SavedRespone>(this.baseUrl + 'api/TemperatureGraph/GenerateTemperatureAsAuto')
+      .subscribe(res => {
+        this.savedRespone = res;
+      });
+  }
+
 
 }
 
