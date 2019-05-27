@@ -163,7 +163,7 @@ namespace DotCoreWebApi.Controllers
                 var webRoot = _env.ContentRootPath;
                 var file = System.IO.Path.Combine(webRoot, "JsonDataStore/BodyTemperature_V1.json");
 
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     double temperatureGenerated = GetRandomTemperature(36.5, 41.2);
                     var JsonData = System.IO.File.ReadAllText(file).Replace("[TEMPERATURE]", String.Format("{0:0.00}", temperatureGenerated));
